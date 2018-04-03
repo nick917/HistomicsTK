@@ -328,6 +328,7 @@ $(function () {
 
             it('check that the drawing type persists when switching annotatations', function () {
                 runs(function () {
+                    $('.h-annotation-selector .h-group-collapsed .h-annotation-group-name').click();
                     expect($('button.h-draw[data-type="point"]').hasClass('active')).toBe(true);
                     $('.h-create-annotation').click();
                 });
@@ -343,6 +344,7 @@ $(function () {
                 });
                 // delete the annotation we just created.
                 runs(function () {
+                    $('.h-annotation-selector .h-group-collapsed .h-annotation-group-name').click();
                     $('.h-annotation-selector .h-annotation:contains("drawn b") .h-delete-annotation').click();
                 });
                 girderTest.waitForDialog();
@@ -497,6 +499,31 @@ $(function () {
         describe('Annotation panel', function () {
             it('panel is rendered', function () {
                 expect($('.h-annotation-selector .s-panel-title').text()).toMatch(/Annotations/);
+
+                // make sure all groups are expanded
+                $('.h-annotation-selector .h-group-collapsed .h-annotation-group-name').click();
+            });
+
+            it('collapse an annotation group', function () {
+                var $el = $('.h-annotation-selector .h-group-expanded[data-group-name="Other"]');
+                expect($el.length).toBe(1);
+                $el.find('.h-annotation-group-name').click();
+
+                $el = $('.h-annotation-selector .h-annotation-group[data-group-name="Other"]');
+                expect($el.hasClass('h-group-collapsed')).toBe(true);
+                expect($el.hasClass('h-group-expanded')).toBe(false);
+                expect($el.find('.h-annotation').length).toBe(0);
+            });
+
+            it('expand an annotation group', function () {
+                var $el = $('.h-annotation-selector .h-group-collapsed[data-group-name="Other"]');
+                expect($el.length).toBe(1);
+                $el.find('.h-annotation-group-name').click();
+
+                $el = $('.h-annotation-selector .h-annotation-group[data-group-name="Other"]');
+                expect($el.hasClass('h-group-collapsed')).toBe(false);
+                expect($el.hasClass('h-group-expanded')).toBe(true);
+                expect($el.find('.h-annotation').length).toBe(1);
             });
 
             it('ensure user cannot remove the admin annotation', function () {
